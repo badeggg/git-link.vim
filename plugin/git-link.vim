@@ -17,7 +17,7 @@ endfunction
 " Returns: A Dictionary:
 "          - {'success': 1, 'hash': 'COMMIT_HASH', 'remote': 'remote_name', 'branch': 'remote_branch_name'} on success.
 "          - {'success': 0, 'err_msg': 'Error Message'} on failure.
-function! s:FindOneRecentRemoteHash()
+function! s:FindOneRecentRemoteCommit()
     let s:max_depth = 20
 
     let current_hash = trim(system('git rev-parse HEAD'))
@@ -97,16 +97,16 @@ function! s:FindOneRecentRemoteHash()
 endfunction
 
 function! GetPermalink(lnum_start, lnum_end)
-    let hash = s:FindOneRecentRemoteHash()
+    let commit = s:FindOneRecentRemoteCommit()
 
-    if !hash.success
-        echoerr hash.err_msg
+    if !commit.success
+        echoerr commit.err_msg
         return
     endif
 
-    let l:remote_url = trim(system('git config --get remote.' . hash.remote . '.url'))
+    let l:remote_url = trim(system('git config --get remote.' . commit.remote . '.url'))
     if empty(l:remote_url)
-        echoerr "Error: Git remote '" . hash.remote . "' not found."
+        echoerr "Error: Git remote '" . commit.remote . "' not found."
         return
     endif
 
@@ -136,7 +136,7 @@ function! GetPermalink(lnum_start, lnum_end)
             \ l:host,
             \ l:owner,
             \ l:repo,
-            \ l:hash.hash,
+            \ l:commit.hash,
             \ l:file_path,
             \ a:lnum_start,
             \ a:lnum_end
@@ -146,7 +146,7 @@ function! GetPermalink(lnum_start, lnum_end)
             \ l:host,
             \ l:owner,
             \ l:repo,
-            \ l:hash.hash,
+            \ l:commit.hash,
             \ l:file_path
             \)
     endif
