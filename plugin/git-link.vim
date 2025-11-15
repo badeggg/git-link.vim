@@ -113,12 +113,12 @@ function! s:ParseDiffHunks(lines)
             let new_c = empty(match[4]) ? 1 : str2nr(match[4][1:])
 
             let hunk = {
-                \ 'old_s': old_s,
-                \ 'new_s': new_s,
                 \ 'old_c': old_c,
                 \ 'new_c': new_c,
-                \ 'old_e': old_s + old_c - (old_c > 0 ? 1 : 0),
-                \ 'new_e': new_s + new_c - (new_c > 0 ? 1 : 0)
+                \ 'old_s': old_c == 0 ? old_s : old_s - 1,
+                \ 'new_s': new_c == 0 ? new_s : new_s - 1,
+                \ 'old_e': old_s + old_c - (old_c == 0 ? 0 : 1),
+                \ 'new_e': new_s + new_c - (new_c == 0 ? 0 : 1)
                 \ }
             call add(hunks, hunk)
         endif
@@ -134,17 +134,17 @@ function! s:FindHunkPosition(line_number_new, hunks)
 
     for hunk in a:hunks
         " 1. Case: Before the very first hunk
-        if v:null == prev_hunk && a:line_number_new < hunk.new_s
+        if v:null == prev_hunk && a:line_number_new <= hunk.new_s
             return {'hunk1': v:null, 'hunk2': hunk, 'position': 'between'}
         endif
 
         " 2. Case: In-Hunk (line number is within the changed block)
-        if a:line_number_new >= hunk.new_s && a:line_number_new <= hunk.new_e
+        if a:line_number_new > hunk.new_s && a:line_number_new <= hunk.new_e
             return {'hunk1': hunk, 'hunk2': v:null, 'position': 'in-hunk'}
         endif
 
         " 3. Case: Between hunks
-        if v:null != prev_hunk && a:line_number_new > prev_hunk.new_e && a:line_number_new < hunk.new_s
+        if v:null != prev_hunk && a:line_number_new > prev_hunk.new_e && a:line_number_new <= hunk.new_s
             return {'hunk1': prev_hunk, 'hunk2': hunk, 'position': 'between'}
         endif
 
@@ -173,10 +173,12 @@ function! s:RectifyLine(line_number_new, pos_dict, arg_type)
     if a:pos_dict.position == 'in-hunk'
         if a:arg_type == 'start'
             " Rectify start line to the start of the old hunk
-            return hunk1.old_s
-        else " arg_type == 'end'
+            " '0.5' means there is not a corresponding old line number
+            return hunk1.old_s + (hunk1.old_c == 0 ? 0.5 : 1)
+        else
             " Rectify end line to the end of the old hunk
-            return hunk1.old_e
+            " '0.5' means there is not a corresponding old line number
+            return hunk1.old_e + (hunk1.old_c == 0 ? 0.5 : 0)
         endif
 
     elseif a:pos_dict.position == 'between'
@@ -241,6 +243,19 @@ function! s:TranslateLinesNewToOld(commit_hash, file_path, start_line_new, end_l
     " Find positions and translate end line
     let end_pos_dict = s:FindHunkPosition(a:end_line_new, hunks)
     let old_end_line = s:RectifyLine(a:end_line_new, end_pos_dict, 'end')
+
+    if old_start_line == old_end_line && type(old_start_line) == v:t_float
+        " no corresponding line
+        let old_start_line = float2nr(old_start_line)
+        let old_end_line = float2nr(old_end_line)
+    elseif old_start_line != old_end_line && type(old_start_line) == v:t_float && type(old_end_line) == v:t_float
+        let old_start_line = float2nr(old_start_line) + 1
+        let old_end_line = float2nr(old_end_line)
+    elseif type(old_start_line) == v:t_float && type(old_end_line) != v:t_float
+        let old_start_line = float2nr(old_start_line) + 1
+    elseif type(old_start_line) != v:t_float && type(old_end_line) == v:t_float
+        let old_end_line = float2nr(old_end_line)
+    endif
 
     return {
         \ 'success': 1,
