@@ -246,8 +246,8 @@ function! s:TranslateLinesNewToOld(commit_hash, file_path, start_line_new, end_l
 
     if old_start_line == old_end_line && type(old_start_line) == v:t_float
         " no corresponding line
-        let old_start_line = float2nr(old_start_line)
-        let old_end_line = float2nr(old_end_line)
+        let old_start_line = float2nr(old_start_line) == 0 ? 1 : float2nr(old_start_line)
+        let old_end_line = old_start_line
     elseif old_start_line != old_end_line && type(old_start_line) == v:t_float && type(old_end_line) == v:t_float
         let old_start_line = float2nr(old_start_line) + 1
         let old_end_line = float2nr(old_end_line)
