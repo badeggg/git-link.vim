@@ -1,17 +1,17 @@
-##### Generates git permalink, no need to manually adjust line numbers before sharing!
+### Generates git permalink, no need to manually adjust line numbers before sharing!
 
 ### Commands
-[:Link](https://github.com/badeggg/git-link.vim/blob/ac4aec9dc91bc46d1bffc4dcc8281110fb7e9201/plugin/git-link.vim#L332-L332)
+- [:Link](https://github.com/badeggg/git-link.vim/blob/ac4aec9dc91bc46d1bffc4dcc8281110fb7e9201/plugin/git-link.vim#L332-L332)
     - Generate perm link of current line, if you are not visually selecting any line.
     - Generate perm link of selected lines, if you are visually selecting few lines.
-[:LinkFile](https://github.com/badeggg/git-link.vim/blob/ac4aec9dc91bc46d1bffc4dcc8281110fb7e9201/plugin/git-link.vim#L332-L332)
+- [:LinkFile](https://github.com/badeggg/git-link.vim/blob/ac4aec9dc91bc46d1bffc4dcc8281110fb7e9201/plugin/git-link.vim#L332-L332)
     - Generate perm link of current file, no line is specified.
 
 ### Use which commit hash
 This vim plugin will try to find a recent remote commit to use:
-    - [This function](https://github.com/badeggg/git-link.vim/blob/ac4aec9dc91bc46d1bffc4dcc8281110fb7e9201/plugin/git-link.vim#L15-L97) track back parent commits to find one recent remote hash, from current HEAD
-    - [Max depth is 20](https://github.com/badeggg/git-link.vim/blob/ac4aec9dc91bc46d1bffc4dcc8281110fb7e9201/plugin/git-link.vim#L21-L21)
-    - Multi parents are taken care.
+- [This function](https://github.com/badeggg/git-link.vim/blob/ac4aec9dc91bc46d1bffc4dcc8281110fb7e9201/plugin/git-link.vim#L15-L97) track back parent commits to find one recent remote hash, from current HEAD
+- [Max depth is 20](https://github.com/badeggg/git-link.vim/blob/ac4aec9dc91bc46d1bffc4dcc8281110fb7e9201/plugin/git-link.vim#L21-L21)
+- Multi parents are taken care.
 
 ### Edge cases
 There are few edge cases when translate current line number to remote commit line number.
