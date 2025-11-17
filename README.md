@@ -4,7 +4,7 @@
 - [:Link](https://github.com/badeggg/git-link.vim/blob/ac4aec9dc91bc46d1bffc4dcc8281110fb7e9201/plugin/git-link.vim#L332-L332)
     - Generate perm link of current line, if you are not visually selecting any line.
     - Generate perm link of selected lines, if you are visually selecting few lines.
-- [:LinkFile](https://github.com/badeggg/git-link.vim/blob/ac4aec9dc91bc46d1bffc4dcc8281110fb7e9201/plugin/git-link.vim#L332-L332)
+- [:LinkFile](https://github.com/badeggg/git-link.vim/blob/ac4aec9dc91bc46d1bffc4dcc8281110fb7e9201/plugin/git-link.vim)
     - Generate perm link of current file, no line is specified.
 
 ### Use which commit hash
